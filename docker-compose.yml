@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  database:
+    platform: linux/x86_64
+    image: 'postgres:latest'
+    container_name: productDB
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./:/app/
+    environment:
+      POSTGRES_DB: productDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    networks:
+      - internal
+
+  app:
+    container_name: productService
+    command: java -jar target/ProductService-0.0.1-SNAPSHOT.jar
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    depends_on:
+      - database
+    volumes:
+      - ./:/app/app
+    links:
+      - database
+    networks:
+      - internal
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://productDB:5432/productDB
+      #- spring_rabbitmq_host=rabbitmq-container
+      #- spring_rabbitmq_port=5672+
+
+networks:
+  internal:
+    name: internal

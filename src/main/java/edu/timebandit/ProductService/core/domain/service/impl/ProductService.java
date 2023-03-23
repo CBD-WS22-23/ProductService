@@ -5,7 +5,7 @@ import edu.timebandit.ProductService.core.domain.service.interfaces.IProductRepo
 import edu.timebandit.ProductService.core.domain.service.interfaces.IProductService;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ProductService implements IProductService {
@@ -19,13 +19,15 @@ public class ProductService implements IProductService {
 
 
     @Override
-    public void createProduct(Product product) {
-        productRepository.save(product);
+    public String createProduct(Product product) {
+        Product savedProduct = productRepository.save(product);
+        return savedProduct.getWatchID();
     }
 
     @Override
-    public void updateProduct(Product product) {
-        productRepository.save(product);
+    public String updateProduct(Product product) {
+        Product updatedProduct = productRepository.save(product);
+        return updatedProduct.getWatchID();
     }
 
     @Override
@@ -34,8 +36,24 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product getProduct(String id) {
-        return productRepository.findById(id).orElse(null);
+    public void deleteProduct(UUID id) {
+        productRepository.deleteById(id.toString());
+    }
+
+    @Override
+    public Product getProductByWatchID(String id) {
+        Iterable<Product> products = productRepository.findAll();
+        for (Product product : products) {
+            if (product.getWatchID().equals(id)) {
+                return product;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Product getProduct(UUID id) {
+        return productRepository.findById(id.toString()).orElse(null);
     }
 
     @Override
