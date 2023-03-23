@@ -14,7 +14,7 @@ public class ProductController {
     @Autowired
     private IProductService productService;
 
-    @PostMapping(path = "/product")
+    @PostMapping(path = "/product/")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody void create(@RequestBody Product product) {
         productService.createProduct(product);
@@ -32,16 +32,27 @@ public class ProductController {
     }
 
     @PutMapping(path = "/product/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public @ResponseBody String update(@RequestBody Product product, @PathVariable String id) {
+        Product product1 = productService.getProductByWatchID(id);
+        if (!product.getWatchID().equals(id) || product1 == null) {
+            throw new ProductNotFoundException(id);
+        }
         return productService.updateProduct(product);
     }
 
     @DeleteMapping(path = "/product/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public @ResponseBody String delete(@PathVariable String id) {
-        return null;
+        Product product = productService.getProductByWatchID(id);
+        if (product == null) {
+            throw new ProductNotFoundException(id);
+        }
+        productService.deleteProduct(product);
+        return "Product with id: " + id + " was deleted";
     }
 
-    @GetMapping("/products")
+    @GetMapping("/products/")
     public @ResponseBody Iterable<Product> getProducts() {
         return productService.getAllProducts();
     }
