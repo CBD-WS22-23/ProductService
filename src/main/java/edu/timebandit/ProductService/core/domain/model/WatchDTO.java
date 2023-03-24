@@ -10,7 +10,7 @@ import java.util.Map;
 public class WatchDTO {
     private String name;
     private String description;
-    private String price;
+    private double price;
     private Map<String, String> generalInfo;
     private Map<String, String> housingInfo;
     private List<String> features;

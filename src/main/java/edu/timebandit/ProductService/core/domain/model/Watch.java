@@ -33,7 +33,7 @@ public class Watch {
 
     @Column(nullable = false)
     @NotBlank
-    private String price;
+    private double price;
 
     @ElementCollection
     private Map<String, String> generalInfo;
