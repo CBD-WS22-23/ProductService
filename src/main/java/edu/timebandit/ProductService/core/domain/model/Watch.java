@@ -1,6 +1,7 @@
 package edu.timebandit.ProductService.core.domain.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.UuidGenerator;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Accessors(chain = true)
 @Entity
 @Builder
-public class Product {
+public class Watch {
 
     @Id
     @Column(nullable = false, unique = true, columnDefinition = "uuid")
@@ -25,14 +26,13 @@ public class Product {
     private UUID id;
 
     @Column(nullable = false)
-    private String watchID;
-
-    @Column(nullable = false)
+    @NotBlank
     private String name;
 
     private String description;
 
     @Column(nullable = false)
+    @NotBlank
     private String price;
 
     @ElementCollection
@@ -53,6 +53,5 @@ public class Product {
     private List<String> imageLinks;
 
     private String brand;
-
 
 }

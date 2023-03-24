@@ -1,22 +1,19 @@
 package edu.timebandit.ProductService.core.domain.service.interfaces;
 
-import edu.timebandit.ProductService.core.domain.model.Product;
-
-import java.util.UUID;
+import edu.timebandit.ProductService.core.domain.model.Watch;
+import edu.timebandit.ProductService.core.domain.model.WatchDTO;
 
 public interface IProductService {
 
-    String createProduct(Product product);
+    String createProduct(WatchDTO watch);
 
-    String updateProduct(Product product);
+    String updateProduct(WatchDTO watch, String watchID);
 
-    void deleteProduct(Product product);
+    void deleteProduct(String watchID);
 
-    void deleteProduct(UUID id);
+    Watch getProductByID(String watchID);
 
-    Product getProductByWatchID(String id);
+    boolean checkIfProductExists(String watchID);
 
-    Product getProduct(UUID id);
-
-    Iterable<Product> getAllProducts();
+    Iterable<Watch> getAllProducts();
 }
