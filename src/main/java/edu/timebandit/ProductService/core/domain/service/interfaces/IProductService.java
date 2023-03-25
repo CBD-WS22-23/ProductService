@@ -13,6 +13,12 @@ public interface IProductService {
 
     Watch getProductByID(String watchID);
 
+    Iterable<Watch> getProductsByBrand(String brand);
+
+    Iterable<Watch> getProductsByPriceRange(double min, double max);
+
+    Iterable<Watch> getProductsByIDs(Iterable<String> watchIDs);
+
     boolean checkIfProductExists(String watchID);
 
     Iterable<Watch> getAllProducts();

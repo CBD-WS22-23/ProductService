@@ -32,7 +32,6 @@ public class Watch {
     private String description;
 
     @Column(nullable = false)
-    @NotBlank
     private double price;
 
     @ElementCollection

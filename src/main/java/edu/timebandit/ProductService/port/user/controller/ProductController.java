@@ -17,14 +17,14 @@ public class ProductController {
     private IProductService productService;
 
     @Operation(summary = "Add a new watch to the store")
-    @PostMapping(path = "/watch")
+    @PostMapping(path = "/watches")
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@RequestBody WatchDTO watch) {
         return productService.createProduct(watch);
     }
 
     @Operation(summary = "Find a watch by id")
-    @GetMapping("/watch/{watchID}")
+    @GetMapping("/watches/{watchID}")
     public Watch getProduct(@PathVariable String watchID) {
         Watch watch = productService.getProductByID(watchID);
         if (watch == null) {
@@ -34,7 +34,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Update a watch by id")
-    @PutMapping(path = "/watch/{watchID}")
+    @PutMapping(path = "/watches/{watchID}")
     @ResponseStatus(HttpStatus.OK)
     public String update(@RequestBody WatchDTO watch, @PathVariable String watchID) {
         if (productService.checkIfProductExists(watchID)) {
@@ -44,7 +44,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Delete a watch by id")
-    @DeleteMapping(path = "/watch/{watchID}")
+    @DeleteMapping(path = "/watches/{watchID}")
     @ResponseStatus(HttpStatus.OK)
     public String delete(@PathVariable String watchID) {
         if (productService.checkIfProductExists(watchID)) {
@@ -55,9 +55,25 @@ public class ProductController {
         throw new ProductNotFoundException(watchID);
     }
 
-    @Operation(summary = "Get all watches")
+    @Operation(summary = "Get all watches or optionally by id(s)")
     @GetMapping("/watches")
-    public Iterable<Watch> getProducts() {
+    public Iterable<Watch> getProducts(@RequestParam(required = false) Iterable<String> watchIDs) {
+        if (watchIDs != null) {
+            return productService.getProductsByIDs(watchIDs);
+        }
         return productService.getAllProducts();
     }
+
+    @Operation(summary = "Get all watches by brand")
+    @GetMapping("/watches/{brand}")
+    public Iterable<Watch> getProductsByBrand(@PathVariable String brand) {
+        return productService.getProductsByBrand(brand);
+    }
+
+    @Operation(summary = "Get all watches by price range")
+    @GetMapping("/watches/price")
+    public Iterable<Watch> getProductsByPriceRange(@RequestParam double min, @RequestParam double max) {
+        return productService.getProductsByPriceRange(min, max);
+    }
+
 }

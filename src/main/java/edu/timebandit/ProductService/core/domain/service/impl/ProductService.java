@@ -6,7 +6,10 @@ import edu.timebandit.ProductService.core.domain.service.interfaces.IProductRepo
 import edu.timebandit.ProductService.core.domain.service.interfaces.IProductService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
+
 
 @Service
 public class ProductService implements IProductService {
@@ -50,6 +53,39 @@ public class ProductService implements IProductService {
     @Override
     public Watch getProductByID(String watchID) {
         return productRepository.findById(UUID.fromString(watchID)).orElse(null);
+    }
+
+    @Override
+    public Iterable<Watch> getProductsByBrand(String brand) {
+        Iterable<Watch> allProducts = productRepository.findAll();
+        ArrayList<Watch> productsByBrand = new ArrayList<>();
+        for (Watch watch : allProducts) {
+            if (watch.getBrand().equals(brand)) {
+                productsByBrand.add(watch);
+            }
+        }
+        return productsByBrand;
+    }
+
+    @Override
+    public Iterable<Watch> getProductsByPriceRange(double min, double max) {
+        Iterable<Watch> allProducts = productRepository.findAll();
+        ArrayList<Watch> productsByPriceRange = new ArrayList<>();
+        for (Watch watch : allProducts) {
+            if (watch.getPrice() >= min && watch.getPrice() <= max) {
+                productsByPriceRange.add(watch);
+            }
+        }
+        return productsByPriceRange;
+    }
+
+    @Override
+    public Iterable<Watch> getProductsByIDs(Iterable<String> watchIDs) {
+        HashSet<UUID> watchIDSet = new HashSet<>();
+        for (String watchID : watchIDs) {
+            watchIDSet.add(UUID.fromString(watchID));
+        }
+        return productRepository.findAllById(watchIDSet);
     }
 
     @Override
