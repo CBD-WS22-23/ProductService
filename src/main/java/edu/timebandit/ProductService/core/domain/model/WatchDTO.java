@@ -1,6 +1,5 @@
 package edu.timebandit.ProductService.core.domain.model;
 
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.List;
@@ -17,7 +16,4 @@ public class WatchDTO {
     private int stock;
     private List<String> imageLinks;
     private String brand;
-
-    @Size(min = 3, max = 3)
-    private String brandAbbreviation;
 }
