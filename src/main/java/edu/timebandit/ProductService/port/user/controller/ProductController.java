@@ -65,7 +65,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Get all watches by brand")
-    @GetMapping("/watches/{brand}")
+    @GetMapping("/watches/brand/{brand}")
     public Iterable<Watch> getProductsByBrand(@PathVariable String brand) {
         return productService.getProductsByBrand(brand);
     }
