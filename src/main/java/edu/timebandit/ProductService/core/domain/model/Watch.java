@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,8 @@ import java.util.UUID;
 public class Watch {
 
     @Id
-    @Column(nullable = false, unique = true, columnDefinition = "uuid")
-    @GeneratedValue (strategy = GenerationType.UUID)
-    @UuidGenerator
+    @Column(nullable = false, unique = true)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID id;
 
     @Column(nullable = false)
