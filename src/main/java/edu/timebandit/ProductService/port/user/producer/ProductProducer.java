@@ -1,5 +1,6 @@
 package edu.timebandit.ProductService.port.user.producer;
 
+import edu.timebandit.ProductService.core.domain.model.BasketWatchDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ProductProducer {
+
 
     @Value("product_exchange")
     private String exchange;
@@ -23,8 +25,9 @@ public class ProductProducer {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendCreateProductMessage(String message) {
-        logger.info("Sending message to create product: {}", message);
-        rabbitTemplate.convertAndSend(exchange, routingKey, message);
+    public void sendCreateProductMessage(BasketWatchDTO watch) {
+
+        logger.info("Sending message to create product: {}", watch);
+        rabbitTemplate.convertAndSend(exchange, routingKey, watch);
     }
 }

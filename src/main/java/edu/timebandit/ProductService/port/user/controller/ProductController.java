@@ -1,11 +1,15 @@
 package edu.timebandit.ProductService.port.user.controller;
 
+import edu.timebandit.ProductService.core.domain.model.BasketWatchDTO;
 import edu.timebandit.ProductService.core.domain.model.Watch;
 import edu.timebandit.ProductService.core.domain.model.ProductWatchDTO;
 import edu.timebandit.ProductService.core.domain.service.interfaces.IProductService;
 import edu.timebandit.ProductService.port.user.exception.ProductNotFoundException;
+import edu.timebandit.ProductService.port.user.producer.ProductProducer;
 import io.swagger.v3.oas.annotations.Operation;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +20,20 @@ public class ProductController {
     @Autowired
     private IProductService productService;
 
+    @Autowired
+    private ProductProducer productProducer;
+
+    @Autowired
+    @Qualifier("BasketModelMapper")
+    private ModelMapper modelMapper;
+
     @Operation(summary = "Add a new watch to the store")
     @PostMapping(path = "/watches")
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@RequestBody ProductWatchDTO watch) {
         Watch createdWatch = productService.createProduct(watch);
+        productProducer.sendCreateProductMessage(modelMapper.map(createdWatch, BasketWatchDTO.class));
         return createdWatch.getId().toString();
-
     }
 
     @Operation(summary = "Find a watch by id")
