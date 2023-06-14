@@ -1,7 +1,7 @@
 package edu.timebandit.ProductService.port.user.controller;
 
 import edu.timebandit.ProductService.core.domain.model.Watch;
-import edu.timebandit.ProductService.core.domain.model.WatchDTO;
+import edu.timebandit.ProductService.core.domain.model.ProductWatchDTO;
 import edu.timebandit.ProductService.core.domain.service.interfaces.IProductService;
 import edu.timebandit.ProductService.port.user.exception.ProductNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,8 +19,10 @@ public class ProductController {
     @Operation(summary = "Add a new watch to the store")
     @PostMapping(path = "/watches")
     @ResponseStatus(HttpStatus.CREATED)
-    public String create(@RequestBody WatchDTO watch) {
-        return productService.createProduct(watch);
+    public String create(@RequestBody ProductWatchDTO watch) {
+        Watch createdWatch = productService.createProduct(watch);
+        return createdWatch.getId().toString();
+
     }
 
     @Operation(summary = "Find a watch by id")
@@ -36,7 +38,7 @@ public class ProductController {
     @Operation(summary = "Update a watch by id")
     @PutMapping(path = "/watches/{watchID}")
     @ResponseStatus(HttpStatus.OK)
-    public String update(@RequestBody WatchDTO watch, @PathVariable String watchID) {
+    public String update(@RequestBody ProductWatchDTO watch, @PathVariable String watchID) {
         if (productService.checkIfProductExists(watchID)) {
             return productService.updateProduct(watch, watchID);
         }
@@ -67,7 +69,8 @@ public class ProductController {
     @Operation(summary = "Get all watches by brand")
     @GetMapping("/watches/brand/{brand}")
     public Iterable<Watch> getProductsByBrand(@PathVariable String brand) {
-        return productService.getProductsByBrand(brand);
+        String formattedBrand = brand.substring(0, 1).toUpperCase() + brand.substring(1).toLowerCase();
+        return productService.getProductsByBrand(formattedBrand);
     }
 
     @Operation(summary = "Get all watches by price range")

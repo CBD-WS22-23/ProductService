@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-public class WatchDTO {
+public class ProductWatchDTO {
     private String name;
     private String description;
     private double price;
@@ -15,5 +15,6 @@ public class WatchDTO {
     private List<String> features;
     private int stock;
     private List<String> imageLinks;
+    private String thumbnail;
     private String brand;
 }

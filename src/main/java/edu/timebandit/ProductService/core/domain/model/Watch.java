@@ -51,6 +51,8 @@ public class Watch {
     @ElementCollection
     private List<String> imageLinks;
 
+    private String thumbnail;
+
     private String brand;
 
 }

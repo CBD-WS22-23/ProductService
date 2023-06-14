@@ -1,7 +1,7 @@
 package edu.timebandit.ProductService.core.domain.service.impl;
 
 import edu.timebandit.ProductService.core.domain.model.Watch;
-import edu.timebandit.ProductService.core.domain.model.WatchDTO;
+import edu.timebandit.ProductService.core.domain.model.ProductWatchDTO;
 import edu.timebandit.ProductService.core.domain.service.interfaces.IProductRepository;
 import edu.timebandit.ProductService.core.domain.service.interfaces.IProductService;
 import org.springframework.stereotype.Service;
@@ -23,16 +23,16 @@ public class ProductService implements IProductService {
 
 
     @Override
-    public String createProduct(WatchDTO watch) {
+    public Watch createProduct(ProductWatchDTO watch) {
         Watch newWatch = new Watch(UUID.randomUUID(), watch.getName(), watch.getDescription(), watch.getPrice(),
                 watch.getGeneralInfo(), watch.getHousingInfo(), watch.getFeatures(), watch.getStock(), 0,
-                watch.getImageLinks(), watch.getBrand());
+                watch.getImageLinks(), watch.getThumbnail(), watch.getBrand());
         newWatch = productRepository.save(newWatch);
-        return newWatch.getId().toString();
+        return newWatch;
     }
 
     @Override
-    public String updateProduct(WatchDTO watch, String watchID) {
+    public String updateProduct(ProductWatchDTO watch, String watchID) {
         Watch oldWatch = productRepository.findById(UUID.fromString(watchID)).orElse(null);
         int cartAmount = 0;
         if(oldWatch != null){
@@ -40,7 +40,7 @@ public class ProductService implements IProductService {
         }
         Watch updatedWatch = new Watch(UUID.fromString(watchID), watch.getName(), watch.getDescription(), watch.getPrice(),
                 watch.getGeneralInfo(), watch.getHousingInfo(), watch.getFeatures(), watch.getStock(), cartAmount,
-                watch.getImageLinks(), watch.getBrand());
+                watch.getImageLinks(), watch.getThumbnail(), watch.getBrand());
         updatedWatch = productRepository.save(updatedWatch);
         return updatedWatch.getId().toString();
     }
