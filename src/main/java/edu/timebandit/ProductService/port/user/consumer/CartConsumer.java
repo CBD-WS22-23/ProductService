@@ -14,4 +14,14 @@ public class CartConsumer {
         LOGGER.info("Received message to create product: {}", watch);
     }
 
+    @RabbitListener(queues = "update_product_queue")
+    public void consumeUpdateProductMessage(BasketWatchDTO watch) {
+        LOGGER.info("Received message to update product: {}", watch);
+    }
+
+    @RabbitListener(queues = "delete_product_queue")
+    public void consumeDeleteProductMessage(BasketWatchDTO watch) {
+        LOGGER.info("Received message to delete product: {}", watch);
+    }
+
 }

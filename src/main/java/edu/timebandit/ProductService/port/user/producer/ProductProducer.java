@@ -15,7 +15,13 @@ public class ProductProducer {
     private String exchange;
 
     @Value("create_product_routing_key")
-    private String routingKey;
+    private String createRoutingKey;
+
+    @Value("update_product_routing_key")
+    private String updateRoutingKey;
+
+    @Value("delete_product_routing_key")
+    private String deleteRoutingKey;
 
     private static final Logger logger = LoggerFactory.getLogger(ProductProducer.class);
 
@@ -28,6 +34,18 @@ public class ProductProducer {
     public void sendCreateProductMessage(BasketWatchDTO watch) {
 
         logger.info("Sending message to create product: {}", watch);
-        rabbitTemplate.convertAndSend(exchange, routingKey, watch);
+        rabbitTemplate.convertAndSend(exchange, createRoutingKey, watch);
+    }
+
+    public void sendUpdateProductMessage(BasketWatchDTO watch) {
+
+        logger.info("Sending message to update product: {}", watch);
+        rabbitTemplate.convertAndSend(exchange, updateRoutingKey, watch);
+    }
+
+    public void sendDeleteProductMessage(BasketWatchDTO watch) {
+
+        logger.info("Sending message to delete product: {}", watch);
+        rabbitTemplate.convertAndSend(exchange, deleteRoutingKey, watch);
     }
 }

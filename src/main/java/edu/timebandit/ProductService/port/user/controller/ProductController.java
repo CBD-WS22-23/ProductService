@@ -36,21 +36,14 @@ public class ProductController {
         return createdWatch.getId().toString();
     }
 
-    @Operation(summary = "Find a watch by id")
-    @GetMapping("/watches/{watchID}")
-    public Watch getProduct(@PathVariable String watchID) {
-        Watch watch = productService.getProductByID(watchID);
-        if (watch == null) {
-            throw new ProductNotFoundException(watchID);
-        }
-        return watch;
-    }
-
     @Operation(summary = "Update a watch by id")
     @PutMapping(path = "/watches/{watchID}")
     @ResponseStatus(HttpStatus.OK)
     public String update(@RequestBody ProductWatchDTO watch, @PathVariable String watchID) {
         if (productService.checkIfProductExists(watchID)) {
+            BasketWatchDTO basketWatchDTO = modelMapper.map(watch, BasketWatchDTO.class);
+            basketWatchDTO.setId(watchID);
+            productProducer.sendUpdateProductMessage(basketWatchDTO);
             return productService.updateProduct(watch, watchID);
         }
         throw new ProductNotFoundException(watchID);
@@ -61,6 +54,7 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public String delete(@PathVariable String watchID) {
         if (productService.checkIfProductExists(watchID)) {
+            productProducer.sendDeleteProductMessage(new BasketWatchDTO(watchID, null, 0.0, 0, null));
             productService.deleteProduct(watchID);
             return "Product with id: " + watchID + " was deleted";
 
@@ -75,6 +69,16 @@ public class ProductController {
             return productService.getProductsByIDs(watchIDs);
         }
         return productService.getAllProducts();
+    }
+
+    @Operation(summary = "Find a watch by id")
+    @GetMapping("/watches/{watchID}")
+    public Watch getProduct(@PathVariable String watchID) {
+        Watch watch = productService.getProductByID(watchID);
+        if (watch == null) {
+            throw new ProductNotFoundException(watchID);
+        }
+        return watch;
     }
 
     @Operation(summary = "Get all watches by brand")

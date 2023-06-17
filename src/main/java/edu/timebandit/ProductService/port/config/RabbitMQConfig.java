@@ -18,6 +18,18 @@ public class RabbitMQConfig {
     @Value("create_product_routing_key")
     private String createRoutingKey;
 
+    @Value("update_product_queue")
+    private String updateQueueName;
+
+    @Value("update_product_routing_key")
+    private String updateRoutingKey;
+
+    @Value("delete_product_queue")
+    private String deleteQueueName;
+
+    @Value("delete_product_routing_key")
+    private String deleteRoutingKey;
+
     @Value("product_exchange")
     private String exchange;
 
@@ -27,8 +39,18 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(exchange);
+    public Queue updateQueue() {
+        return new Queue(updateQueueName);
+    }
+
+    @Bean
+    public Queue deleteQueue() {
+        return new Queue(deleteQueueName);
+    }
+
+    @Bean
+    public DirectExchange exchange() {
+        return new DirectExchange(exchange);
     }
 
     @Bean
@@ -37,6 +59,22 @@ public class RabbitMQConfig {
                 .bind(createQueue())
                 .to(exchange())
                 .with(createRoutingKey);
+    }
+
+    @Bean
+    public Binding updateBinding(){
+        return BindingBuilder
+                .bind(updateQueue())
+                .to(exchange())
+                .with(updateRoutingKey);
+    }
+
+    @Bean
+    public Binding deleteBinding(){
+        return BindingBuilder
+                .bind(deleteQueue())
+                .to(exchange())
+                .with(deleteRoutingKey);
     }
 
     @Bean
