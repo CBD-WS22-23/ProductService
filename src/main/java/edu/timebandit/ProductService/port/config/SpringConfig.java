@@ -1,6 +1,6 @@
 package edu.timebandit.ProductService.port.config;
 
-import edu.timebandit.ProductService.core.domain.model.BasketWatchDTO;
+import edu.timebandit.ProductService.port.basket.dtos.BasketWatchDTO;
 import edu.timebandit.ProductService.core.domain.model.Watch;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;

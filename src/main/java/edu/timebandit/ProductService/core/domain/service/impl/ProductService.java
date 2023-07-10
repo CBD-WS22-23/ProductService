@@ -1,7 +1,7 @@
 package edu.timebandit.ProductService.core.domain.service.impl;
 
 import edu.timebandit.ProductService.core.domain.model.Watch;
-import edu.timebandit.ProductService.core.domain.model.ProductWatchDTO;
+import edu.timebandit.ProductService.port.user.dtos.ProductWatchDTO;
 import edu.timebandit.ProductService.core.domain.service.interfaces.IProductRepository;
 import edu.timebandit.ProductService.core.domain.service.interfaces.IProductService;
 import org.springframework.stereotype.Service;
@@ -34,15 +34,44 @@ public class ProductService implements IProductService {
     @Override
     public String updateProduct(ProductWatchDTO watch, String watchID) {
         Watch oldWatch = productRepository.findById(UUID.fromString(watchID)).orElse(null);
-        int cartAmount = 0;
-        if(oldWatch != null){
-            cartAmount = oldWatch.getInCart();
+        if(oldWatch == null){
+            return null;
         }
+        int cartAmount = oldWatch.getInCart();
         Watch updatedWatch = new Watch(UUID.fromString(watchID), watch.getName(), watch.getDescription(), watch.getPrice(),
                 watch.getGeneralInfo(), watch.getHousingInfo(), watch.getFeatures(), watch.getStock(), cartAmount,
                 watch.getImageLinks(), watch.getThumbnail(), watch.getBrand());
         updatedWatch = productRepository.save(updatedWatch);
         return updatedWatch.getId().toString();
+    }
+
+    @Override
+    public void updateProductStock(String watchID, int amount) {
+        Watch retrievedWatch = productRepository.findById(UUID.fromString(watchID)).orElse(null);
+        if(retrievedWatch != null){
+            retrievedWatch.setStock(retrievedWatch.getStock() + amount);
+            productRepository.save(retrievedWatch);
+        }
+    }
+
+    @Override
+    public void increaseProductInCart(String watchID) {
+        Watch retrievedWatch = productRepository.findById(UUID.fromString(watchID)).orElse(null);
+        if(retrievedWatch != null){
+            retrievedWatch.setInCart(retrievedWatch.getInCart() + 1);
+            productRepository.save(retrievedWatch);
+        }
+    }
+
+    @Override
+    public void decreaseProductInCart(String watchID) {
+        Watch retrievedWatch = productRepository.findById(UUID.fromString(watchID)).orElse(null);
+        if(retrievedWatch != null){
+            if (retrievedWatch.getInCart() > 0) {
+                retrievedWatch.setInCart(retrievedWatch.getInCart() - 1);
+                productRepository.save(retrievedWatch);
+            }
+        }
     }
 
     @Override

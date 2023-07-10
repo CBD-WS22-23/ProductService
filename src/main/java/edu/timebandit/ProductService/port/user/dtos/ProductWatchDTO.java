@@ -1,4 +1,4 @@
-package edu.timebandit.ProductService.core.domain.model;
+package edu.timebandit.ProductService.port.user.dtos;
 
 import lombok.Data;
 

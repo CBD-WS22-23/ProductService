@@ -1,15 +1,13 @@
 package edu.timebandit.ProductService.port.user.controller;
 
-import edu.timebandit.ProductService.core.domain.model.BasketWatchDTO;
+
 import edu.timebandit.ProductService.core.domain.model.Watch;
-import edu.timebandit.ProductService.core.domain.model.ProductWatchDTO;
+
 import edu.timebandit.ProductService.core.domain.service.interfaces.IProductService;
+import edu.timebandit.ProductService.port.user.dtos.ProductWatchDTO;
 import edu.timebandit.ProductService.port.user.exception.ProductNotFoundException;
-import edu.timebandit.ProductService.port.user.producer.ProductProducer;
 import io.swagger.v3.oas.annotations.Operation;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,31 +18,32 @@ public class ProductController {
     @Autowired
     private IProductService productService;
 
-    @Autowired
-    private ProductProducer productProducer;
-
-    @Autowired
-    @Qualifier("BasketModelMapper")
-    private ModelMapper modelMapper;
 
     @Operation(summary = "Add a new watch to the store")
     @PostMapping(path = "/watches")
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@RequestBody ProductWatchDTO watch) {
         Watch createdWatch = productService.createProduct(watch);
-        productProducer.sendCreateProductMessage(modelMapper.map(createdWatch, BasketWatchDTO.class));
         return createdWatch.getId().toString();
     }
+
 
     @Operation(summary = "Update a watch by id")
     @PutMapping(path = "/watches/{watchID}")
     @ResponseStatus(HttpStatus.OK)
     public String update(@RequestBody ProductWatchDTO watch, @PathVariable String watchID) {
         if (productService.checkIfProductExists(watchID)) {
-            BasketWatchDTO basketWatchDTO = modelMapper.map(watch, BasketWatchDTO.class);
-            basketWatchDTO.setId(watchID);
-            productProducer.sendUpdateProductMessage(basketWatchDTO);
             return productService.updateProduct(watch, watchID);
+        }
+        throw new ProductNotFoundException(watchID);
+    }
+
+    @Operation(summary = "Update the stock of a watch by id")
+    @PutMapping(path = "/watches/{watchID}/stock")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateStock(@RequestBody int stock, @PathVariable String watchID) {
+        if (productService.checkIfProductExists(watchID)) {
+            productService.updateProductStock(watchID, stock);
         }
         throw new ProductNotFoundException(watchID);
     }
@@ -54,10 +53,8 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public String delete(@PathVariable String watchID) {
         if (productService.checkIfProductExists(watchID)) {
-            productProducer.sendDeleteProductMessage(new BasketWatchDTO(watchID, null, 0.0, 0, null));
             productService.deleteProduct(watchID);
             return "Product with id: " + watchID + " was deleted";
-
         }
         throw new ProductNotFoundException(watchID);
     }

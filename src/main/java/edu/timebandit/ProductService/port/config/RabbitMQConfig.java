@@ -12,40 +12,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    @Value("create_product_queue")
-    private String createQueueName;
+    @Value("add_product_to_basket_queue")
+    private String addQueueName;
 
-    @Value("create_product_routing_key")
-    private String createRoutingKey;
-
-    @Value("update_product_queue")
-    private String updateQueueName;
-
-    @Value("update_product_routing_key")
-    private String updateRoutingKey;
-
-    @Value("delete_product_queue")
-    private String deleteQueueName;
-
-    @Value("delete_product_routing_key")
-    private String deleteRoutingKey;
+    @Value("add_product_to_basket_routing_key")
+    private String addRoutingKey;
 
     @Value("product_exchange")
     private String exchange;
 
     @Bean
-    public Queue createQueue() {
-        return new Queue(createQueueName);
-    }
-
-    @Bean
-    public Queue updateQueue() {
-        return new Queue(updateQueueName);
-    }
-
-    @Bean
-    public Queue deleteQueue() {
-        return new Queue(deleteQueueName);
+    public Queue addToBasketQueue() {
+        return new Queue(addQueueName);
     }
 
     @Bean
@@ -56,26 +34,11 @@ public class RabbitMQConfig {
     @Bean
     public Binding createBinding(){
         return BindingBuilder
-                .bind(createQueue())
+                .bind(addToBasketQueue())
                 .to(exchange())
-                .with(createRoutingKey);
+                .with(addRoutingKey);
     }
 
-    @Bean
-    public Binding updateBinding(){
-        return BindingBuilder
-                .bind(updateQueue())
-                .to(exchange())
-                .with(updateRoutingKey);
-    }
-
-    @Bean
-    public Binding deleteBinding(){
-        return BindingBuilder
-                .bind(deleteQueue())
-                .to(exchange())
-                .with(deleteRoutingKey);
-    }
 
     @Bean
     public MessageConverter jsonMessageConverter() {

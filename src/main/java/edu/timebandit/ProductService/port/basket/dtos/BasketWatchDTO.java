@@ -1,4 +1,4 @@
-package edu.timebandit.ProductService.core.domain.model;
+package edu.timebandit.ProductService.port.basket.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
