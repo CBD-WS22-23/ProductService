@@ -39,8 +39,8 @@ public class RabbitMQConfig {
     @Value("product_bought_queue")
     private String checkoutQueueName;
 
-    @Value("checkout_product_bought_routing_key")
-    private String checkoutRoutingKey;
+    @Value("product_bought_routing_key")
+    private String checkoutSuccessRoutingKey;
 
     @Value("checkout_exchange")
     private String checkoutExchange;
@@ -81,7 +81,7 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding createBinding(){
+    public Binding addProductToBasketBinding(){
         return BindingBuilder
                 .bind(addToBasketQueue())
                 .to(exchange())
@@ -110,7 +110,7 @@ public class RabbitMQConfig {
         return BindingBuilder
                 .bind(productBoughtQueue())
                 .to(checkoutExchange())
-                .with(checkoutRoutingKey);
+                .with(checkoutSuccessRoutingKey);
     }
 
     @Bean
