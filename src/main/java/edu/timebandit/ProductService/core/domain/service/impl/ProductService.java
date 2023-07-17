@@ -67,10 +67,8 @@ public class ProductService implements IProductService {
     public void decreaseProductInCart(String watchID) {
         Watch retrievedWatch = productRepository.findById(UUID.fromString(watchID)).orElse(null);
         if(retrievedWatch != null){
-            if (retrievedWatch.getInCart() > 0) {
-                retrievedWatch.setInCart(retrievedWatch.getInCart() - 1);
-                productRepository.save(retrievedWatch);
-            }
+            retrievedWatch.setInCart(Math.max(retrievedWatch.getInCart() - 1, 0));
+            productRepository.save(retrievedWatch);
         }
     }
 

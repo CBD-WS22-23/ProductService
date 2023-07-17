@@ -22,6 +22,7 @@ public class ProductBoughtConsumer {
         for (String productID : boughtProducts.getBoughtProducts().keySet()) {
             productService.updateProductStock(productID,
                     Math.negateExact(boughtProducts.getBoughtProducts().get(productID)));
+            productService.decreaseProductInCart(productID);
         }
     }
 }
