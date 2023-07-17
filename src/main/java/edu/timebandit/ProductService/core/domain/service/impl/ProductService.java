@@ -49,7 +49,7 @@ public class ProductService implements IProductService {
     public void updateProductStock(String watchID, int amount) {
         Watch retrievedWatch = productRepository.findById(UUID.fromString(watchID)).orElse(null);
         if(retrievedWatch != null){
-            retrievedWatch.setStock(retrievedWatch.getStock() + amount);
+            retrievedWatch.setStock(Math.max(retrievedWatch.getStock() + amount, 0));
             productRepository.save(retrievedWatch);
         }
     }

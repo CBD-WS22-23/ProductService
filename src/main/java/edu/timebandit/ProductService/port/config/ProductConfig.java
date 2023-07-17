@@ -31,7 +31,7 @@ public class ProductConfig {
         List<Watch> newWatches = new ArrayList<>();
         newWatches.add(new Watch(UUID.fromString("58b74e3e-8e46-4419-bfc6-a8c43dfa694a"),
                 "Rolex Submariner", "Rolex Submariner", 12913.00, generalInfo, housingInfo,
-                features, 25, 0, null, "Thumbnail Link", "Rolex"));
+                features, 25, 1, null, "Thumbnail Link", "Rolex"));
         newWatches.add(new Watch(UUID.fromString("3aba5511-18fd-4ba2-bb2c-ac90d6963dcc"),
                 "Rolex GMT Master II", "Rolex GMT Master II", 15889.00, generalInfo,
                 housingInfo, features, 6, 0, null, "Thumbnail Link", "Rolex"));
