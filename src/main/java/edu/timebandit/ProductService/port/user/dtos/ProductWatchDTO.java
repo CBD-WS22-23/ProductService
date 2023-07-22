@@ -12,6 +12,7 @@ import java.util.Map;
 public class ProductWatchDTO {
     @NotBlank
     private String name;
+    @NotBlank
     private String description;
     @Positive(message = "Price must be greater than 0")
     private double price;
