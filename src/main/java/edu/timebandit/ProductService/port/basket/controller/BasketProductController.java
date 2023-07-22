@@ -4,7 +4,7 @@ import edu.timebandit.ProductService.core.domain.service.interfaces.IProductServ
 import edu.timebandit.ProductService.port.basket.dtos.AddToBasketDTO;
 import edu.timebandit.ProductService.port.basket.dtos.BasketWatchDTO;
 import edu.timebandit.ProductService.port.basket.exception.InvalidQuantityException;
-import edu.timebandit.ProductService.port.basket.producer.AddProductToBasketProducer;
+import edu.timebandit.ProductService.port.basket.producer.interfaces.IAddProductToBasketProducer;
 import edu.timebandit.ProductService.port.user.exception.ProductNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import org.modelmapper.ModelMapper;
@@ -21,7 +21,7 @@ public class BasketProductController {
     private IProductService productService;
 
     @Autowired
-    private AddProductToBasketProducer addProductToBasketProducer;
+    private IAddProductToBasketProducer addProductToBasketProducer;
 
     @Qualifier("BasketModelMapper")
     @Autowired
@@ -30,37 +30,17 @@ public class BasketProductController {
     @Operation(summary = "Add a watch to a basket")
     @PostMapping(path = "/basket/{basketID}/products/{watchID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void addToBasket(@PathVariable String basketID, @PathVariable String watchID, @RequestParam int q) {
+    public void addToBasket(@PathVariable String basketID, @PathVariable String watchID,
+                            @RequestParam int q) {
+
         if (q <= 0) {
             throw new InvalidQuantityException();
         }
         if (!productService.checkIfProductExists(watchID)) {
             throw new ProductNotFoundException(watchID);
         }
-
         BasketWatchDTO basketWatchDTO = modelMapper.map(productService.getProductByID(watchID), BasketWatchDTO.class);
 
         addProductToBasketProducer.sendAddProductToBasketMessage(new AddToBasketDTO(basketID, basketWatchDTO, q));
     }
-
-    @Operation(summary = "Increase inCart property of a watch")
-    @PutMapping(path = "/watch/{watchID}/increase")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void increaseInCart(@PathVariable String watchID) {
-        if (!productService.checkIfProductExists(watchID)) {
-            throw new ProductNotFoundException(watchID);
-        }
-        productService.increaseProductInCart(watchID);
-    }
-
-    @Operation(summary = "Decrease inCart property of a watch")
-    @PutMapping(path = "/watch/{watchID}/decrease")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void decreaseInCart(@PathVariable String watchID) {
-        if (!productService.checkIfProductExists(watchID)) {
-            throw new ProductNotFoundException(watchID);
-        }
-        productService.decreaseProductInCart(watchID);
-    }
-
 }

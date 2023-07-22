@@ -7,6 +7,7 @@ import edu.timebandit.ProductService.core.domain.service.interfaces.IProductServ
 import edu.timebandit.ProductService.port.user.dtos.ProductWatchDTO;
 import edu.timebandit.ProductService.port.user.exception.ProductNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class ProductController {
     @Operation(summary = "Add a new watch to the store")
     @PostMapping(path = "/watches")
     @ResponseStatus(HttpStatus.CREATED)
-    public String create(@RequestBody ProductWatchDTO watch) {
+    public String create(@RequestBody @Valid ProductWatchDTO watch) {
         Watch createdWatch = productService.createProduct(watch);
         return createdWatch.getId().toString();
     }
