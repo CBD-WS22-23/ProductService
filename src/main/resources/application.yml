@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: "ProductService"
   jpa:
     database: postgresql
     show-sql: false
@@ -18,9 +20,13 @@ spring:
     init:
       mode: always
 springdoc:
-    api-docs:
-        enabled: true
-    swagger-ui:
-        enabled: true
-        path: /api-docs
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /api-docs
+eureka:
+  client:
+    service-url:
+      defaultZone: http://host.docker.internal:8084/eureka/
 
