@@ -41,10 +41,10 @@ public class ProductController {
     @PutMapping(path = "/watch/{watchID}/stock")
     @ResponseStatus(HttpStatus.OK)
     public void updateStock(@RequestParam int amount, @PathVariable String watchID) {
-        if (productService.checkIfProductExists(watchID)) {
-            productService.updateProductStock(watchID, amount);
+        if (!productService.checkIfProductExists(watchID)) {
+            throw new ProductNotFoundException(watchID);
         }
-        throw new ProductNotFoundException(watchID);
+        productService.updateProductStock(watchID, amount);
     }
 
     @Operation(summary = "Delete a watch by id")
