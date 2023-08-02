@@ -1,9 +1,11 @@
 package edu.timebandit.ProductService.port.basket.controller;
 
+import edu.timebandit.ProductService.core.domain.model.Watch;
 import edu.timebandit.ProductService.core.domain.service.interfaces.IProductService;
 import edu.timebandit.ProductService.port.basket.dtos.AddToBasketDTO;
 import edu.timebandit.ProductService.port.basket.dtos.BasketWatchDTO;
 import edu.timebandit.ProductService.port.basket.exception.InvalidQuantityException;
+import edu.timebandit.ProductService.port.basket.exception.QuantityLessThanStockException;
 import edu.timebandit.ProductService.port.basket.producer.interfaces.IAddProductToBasketProducer;
 import edu.timebandit.ProductService.port.user.exception.ProductNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,7 +41,13 @@ public class BasketProductController {
         if (!productService.checkIfProductExists(watchID)) {
             throw new ProductNotFoundException(watchID);
         }
-        BasketWatchDTO basketWatchDTO = modelMapper.map(productService.getProductByID(watchID), BasketWatchDTO.class);
+        Watch watch = productService.getProductByID(watchID);
+
+        if (watch.getStock() < quantity) {
+            throw new QuantityLessThanStockException();
+        }
+
+        BasketWatchDTO basketWatchDTO = modelMapper.map(watch, BasketWatchDTO.class);
 
         addProductToBasketProducer.sendAddProductToBasketMessage(new AddToBasketDTO(basketID, basketWatchDTO, quantity));
     }
