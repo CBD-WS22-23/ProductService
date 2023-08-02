@@ -9,8 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 @Service
+@Validated
 public class ProductBoughtConsumer implements IProductBoughtConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductBoughtConsumer.class);
 
