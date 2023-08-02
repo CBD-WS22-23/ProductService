@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Accessors(chain = true)
 @Entity
 @Builder
+@RedisHash("Watch")
 public class Watch {
 
     @Id

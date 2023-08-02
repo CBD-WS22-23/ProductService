@@ -1,8 +1,6 @@
 package edu.timebandit.ProductService.port.user.controller;
 
-
 import edu.timebandit.ProductService.core.domain.model.Watch;
-
 import edu.timebandit.ProductService.core.domain.service.interfaces.IProductService;
 import edu.timebandit.ProductService.port.user.dtos.ProductWatchDTO;
 import edu.timebandit.ProductService.port.user.exception.ProductNotFoundException;
@@ -21,7 +19,7 @@ public class ProductController {
 
 
     @Operation(summary = "Add a new watch to the store")
-    @PostMapping(path = "/watches")
+    @PostMapping(path = "/watch")
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@RequestBody @Valid ProductWatchDTO watch) {
         Watch createdWatch = productService.createProduct(watch);
@@ -30,7 +28,7 @@ public class ProductController {
 
 
     @Operation(summary = "Update a watch by id")
-    @PutMapping(path = "/watches/{watchID}")
+    @PutMapping(path = "/watch/{watchID}")
     @ResponseStatus(HttpStatus.OK)
     public String update(@RequestBody ProductWatchDTO watch, @PathVariable String watchID) {
         if (productService.checkIfProductExists(watchID)) {
@@ -40,17 +38,17 @@ public class ProductController {
     }
 
     @Operation(summary = "Update the stock of a watch by id")
-    @PutMapping(path = "/watches/{watchID}/stock")
+    @PutMapping(path = "/watch/{watchID}/stock")
     @ResponseStatus(HttpStatus.OK)
-    public void updateStock(@RequestBody int stock, @PathVariable String watchID) {
+    public void updateStock(@RequestParam int amount, @PathVariable String watchID) {
         if (productService.checkIfProductExists(watchID)) {
-            productService.updateProductStock(watchID, stock);
+            productService.updateProductStock(watchID, amount);
         }
         throw new ProductNotFoundException(watchID);
     }
 
     @Operation(summary = "Delete a watch by id")
-    @DeleteMapping(path = "/watches/{watchID}")
+    @DeleteMapping(path = "/watch/{watchID}")
     @ResponseStatus(HttpStatus.OK)
     public String delete(@PathVariable String watchID) {
         if (productService.checkIfProductExists(watchID)) {
@@ -61,7 +59,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Get all watches or optionally by id(s)")
-    @GetMapping("/watches")
+    @GetMapping("/watch")
     public Iterable<Watch> getProducts(@RequestParam(required = false) Iterable<String> watchIDs) {
         if (watchIDs != null) {
             return productService.getProductsByIDs(watchIDs);
@@ -70,7 +68,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Find a watch by id")
-    @GetMapping("/watches/{watchID}")
+    @GetMapping("/watch/{watchID}")
     public Watch getProduct(@PathVariable String watchID) {
         Watch watch = productService.getProductByID(watchID);
         if (watch == null) {
@@ -80,14 +78,14 @@ public class ProductController {
     }
 
     @Operation(summary = "Get all watches by brand")
-    @GetMapping("/watches/brand/{brand}")
+    @GetMapping("/watch/brand/{brand}")
     public Iterable<Watch> getProductsByBrand(@PathVariable String brand) {
         String formattedBrand = brand.substring(0, 1).toUpperCase() + brand.substring(1).toLowerCase();
         return productService.getProductsByBrand(formattedBrand);
     }
 
     @Operation(summary = "Get all watches by price range")
-    @GetMapping("/watches/price")
+    @GetMapping("/watch/price")
     public Iterable<Watch> getProductsByPriceRange(@RequestParam double min, @RequestParam double max) {
         return productService.getProductsByPriceRange(min, max);
     }

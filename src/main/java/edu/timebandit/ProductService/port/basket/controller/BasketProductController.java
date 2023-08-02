@@ -31,9 +31,9 @@ public class BasketProductController {
     @PostMapping(path = "/basket/{basketID}/products/{watchID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void addToBasket(@PathVariable String basketID, @PathVariable String watchID,
-                            @RequestParam int q) {
+                            @RequestParam int quantity) {
 
-        if (q <= 0) {
+        if (quantity <= 0) {
             throw new InvalidQuantityException();
         }
         if (!productService.checkIfProductExists(watchID)) {
@@ -41,6 +41,6 @@ public class BasketProductController {
         }
         BasketWatchDTO basketWatchDTO = modelMapper.map(productService.getProductByID(watchID), BasketWatchDTO.class);
 
-        addProductToBasketProducer.sendAddProductToBasketMessage(new AddToBasketDTO(basketID, basketWatchDTO, q));
+        addProductToBasketProducer.sendAddProductToBasketMessage(new AddToBasketDTO(basketID, basketWatchDTO, quantity));
     }
 }

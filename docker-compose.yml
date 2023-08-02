@@ -16,6 +16,14 @@ services:
     networks:
       - internal
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - '6379:6379'
+    networks:
+      - internal
+
   app:
     container_name: productService
     command: java -jar target/ProductService-0.0.1-SNAPSHOT.jar
@@ -26,16 +34,20 @@ services:
       - '8080:8080'
     depends_on:
       - database
+      - redis
     volumes:
       - ./:/app/app
     links:
       - database
+      - redis
     networks:
       - internal
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/productDB
       - spring_rabbitmq_host=host.docker.internal
       - spring_rabbitmq_port=5672
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
 
 networks:
   internal:
